@@ -1,5 +1,4 @@
 const path = require('path');
-
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const htmlPlugin = new HtmlWebPackPlugin({
   template: './src/index.html',
@@ -7,23 +6,14 @@ const htmlPlugin = new HtmlWebPackPlugin({
 });
 
 module.exports = {
-  mode: 'development',
+  plugins: [htmlPlugin],
   entry: './src/index.js',
-  output: {
-    path: __dirname + '/dist',
-    filename: 'bundle.js',
-  },
   module: {
     rules: [
       {
-        test: /.jsx?/,
-        include: [__dirname + '/src'],
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-react']
-          }
-        }
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
       },
       {
         test: /\.css$/,
@@ -31,21 +21,13 @@ module.exports = {
         use: [{loader: 'style-loader'},{ loader: 'css-loader'}]
       },
       {
-        test: /\.svg$/,
+        test: /\.(png|jpe?g|gif)$/i,
         include: [__dirname + '/src'],
         use: [{loader: 'file-loader'}]
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['*', '.js', '.jsx'],
   },
-  plugins: [htmlPlugin],
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
-    compress: true,
-    port: 9000,
-  }
 };
